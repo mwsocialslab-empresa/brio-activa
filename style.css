@@ -186,9 +186,8 @@ body.menu-open {
 .img-container img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Cambiado de cover a contain para ver el producto completo */
+    object-fit: cover;
     border-radius: 10px;
-    background-color: #f8f8f8; /* Fondo suave para que no quede vacío si el producto es angosto */
 }
 
 /* =========================================
@@ -197,10 +196,10 @@ body.menu-open {
 .img-mini-carrito {
     width: 100%;
     aspect-ratio: 1 / 1;
-    object-fit: contain; /* Evita que la miniatura se vea cortada en el pedido */
+    object-fit: cover;
     border-radius: 8px;
-    background: #fff;
 }
+
 /* Selector de cantidad sutil */
 .wrapper-cantidad-carrito {
     display: inline-flex;
@@ -244,8 +243,7 @@ body.menu-open {
 .contenedor-zoom img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Garantiza que el envase se vea de punta a punta */
-    padding: 10px; /* Un pequeño margen interno para que no toque los bordes */
+    object-fit: cover;
 }
 
 .btn-talle-selector {
@@ -382,13 +380,4 @@ button {
 /* Si quieres que la flecha sea naranja como tu texto */
 #accordionHorarios .accordion-button::after {
     filter: invert(78%) sepia(64%) saturate(541%) hue-rotate(354deg) brightness(101%) contrast(101%);
-}
-#carouselDetalle .carousel-item img {
-    max-height: 400px;
-    background-color: #fff;
-}
-
-.carousel-control-prev-icon, .carousel-control-next-icon {
-    width: 2rem;
-    height: 2rem;
 }

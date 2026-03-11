@@ -102,28 +102,30 @@ function renderizarProductos(data) {
                 if (imgURL.includes("drive.google.com")) {
                     const match = imgURL.match(/\/d\/([^/]+)/) || imgURL.match(/[?&]id=([^&]+)/);
                     if (match && match[1]) {
-                        // Corrección de sintaxis de template string
-                        imgURL = `https://lh3.googleusercontent.com/u/0/d/$${match[1]}`;
+                        // Corrección: Usamos backticks y el signo $ para que el ID se inserte bien
+                        imgURL = `https://lh3.googleusercontent.com/d/${match[1]}`;
                     }
                 }
 
-                // --- 🔹 LIMPIEZA DE DESCRIPCIÓN PARA EL INICIO ---
-                // Tomamos solo el primer bloque de texto antes del separador '|'
+                // --- 🔹 LIMPIEZA DE NOMBRE Y DESCRIPCIÓN PARA EL INICIO ---
+                // Tomamos solo el primer bloque antes del separador '|' para que no se vea feo en la lista
+                const nombreLimpio = p.nombre ? p.nombre.split("|")[0].trim() : "Sin nombre";
                 const detalleLimpio = p.detalle ? p.detalle.split("|")[0].trim() : 'Opción de Brío Activa.';
                 // ----------------------------------------------------------
 
+                // Guardamos los datos completos para que la vista de detalle pueda usarlos
                 productosGlobal.push({ ...p, precio, imagen: listaImagenes, categoria: cat });
 
                 htmlFinal += `
                     <div class="col-12 col-md-6 producto" data-categoria="${cat}">
                         <div class="card producto-card shadow-sm mb-2" onclick="verDetalle(${globalIndex})">
                             <div class="info-container">
-                                <h6 class="fw-bold mb-1">${p.nombre.toUpperCase()}</h6>
+                                <h6 class="fw-bold mb-1">${nombreLimpio.toUpperCase()}</h6>
                                 <p class="descripcion-corta mb-2 text-muted small">${detalleLimpio}</p>
                                 <div class="precio text-success fw-bold">$${precio.toLocaleString('es-AR')}</div>
                             </div>
                             <div class="img-container">
-                                <img src="${imgURL}" alt="${p.nombre}" loading="lazy" style="object-fit: contain;">
+                                <img src="${imgURL}" alt="${nombreLimpio}" loading="lazy" style="object-fit: contain;">
                             </div>
                         </div>
                     </div>`;
@@ -142,10 +144,15 @@ function verDetalle(index) {
     const contenedorImg = document.querySelector(".contenedor-zoom");
     const imagenes = p.imagen.split(",").map(img => img.trim());
     
-    // --- 🔹 NUEVA LÓGICA DE DESCRIPCIONES SINCRONIZADAS ---
-    // Seteamos la descripción inicial (la primera parte antes del |)
+    // --- 🔹 LÓGICA DE DATOS DINÁMICOS (NOMBRE Y DESCRIPCIÓN) ---
+    const nombres = (p.nombre || "").split("|").map(n => n.trim());
     const descripciones = (p.detalle || "").split("|").map(d => d.trim());
+    
+    const nombreElement = document.getElementById("detalle-nombre");
     const descElement = document.getElementById("detalle-descripcion");
+
+    // Seteamos los valores iniciales (posición 0)
+    if (nombreElement) nombreElement.innerText = nombres[0].toUpperCase();
     if (descElement) descElement.innerText = descripciones[0] || 'Opción de Brío Activa.';
 
     let htmlFotos = "";
@@ -169,11 +176,16 @@ function verDetalle(index) {
         
         contenedorImg.innerHTML = htmlFotos;
 
-        // --- 🔹 EVENTO PARA DETECTAR EL CAMBIO DE FOTO ---
+        // --- 🔹 EVENTO DE CAMBIO SINCRONIZADO ---
         const myCarousel = document.getElementById('carouselDetalle');
         myCarousel.addEventListener('slid.bs.carousel', function (event) {
-            const indexFoto = event.to; // Nos dice a qué foto cambió (0, 1, 2...)
-            // Si existe una descripción para esa foto, la ponemos. Si no, dejamos la primera.
+            const indexFoto = event.to; 
+            
+            // Cambia Nombre
+            if (nombreElement) {
+                nombreElement.innerText = (nombres[indexFoto] || nombres[0]).toUpperCase();
+            }
+            // Cambia Descripción
             if (descElement) {
                 descElement.innerText = descripciones[indexFoto] || descripciones[0];
             }
@@ -183,8 +195,6 @@ function verDetalle(index) {
         contenedorImg.innerHTML = `<img id="detalle-img" src="${imagenes[0]}" class="img-fluid" style="object-fit: contain;">`;
     }
 
-    // El resto de los datos
-    document.getElementById("detalle-nombre").innerText = p.nombre.toUpperCase();
     document.getElementById("detalle-precio").innerText = `$${p.precio.toLocaleString('es-AR')}`;
     document.getElementById("cant-detalle").value = 1;
 
