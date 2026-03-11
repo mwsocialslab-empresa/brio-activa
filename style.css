@@ -383,3 +383,12 @@ button {
 #accordionHorarios .accordion-button::after {
     filter: invert(78%) sepia(64%) saturate(541%) hue-rotate(354deg) brightness(101%) contrast(101%);
 }
+#carouselDetalle .carousel-item img {
+    max-height: 400px;
+    background-color: #fff;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    width: 2rem;
+    height: 2rem;
+}
