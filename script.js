@@ -281,6 +281,20 @@ function buscarProducto() {
 
 function filtrar(cat) {
     volverAlCatalogo();
+    
+    // --- 🔹 NUEVA LÓGICA PARA EL HERO EN MÓVILES ---
+    const hero = document.getElementById("hero");
+    if (hero) {
+        // Si el ancho es menor a 768px (móvil) y elegiste una categoría que no sea 'todos'
+        if (window.innerWidth < 768 && cat !== 'todos') {
+            hero.classList.add("d-none");
+        } else {
+            // Si es 'todos' o pantalla grande, aseguramos que se vea
+            hero.classList.remove("d-none");
+        }
+    }
+    // ----------------------------------------------
+
     document.querySelectorAll('.producto').forEach(p => {
         p.style.display = (cat === 'todos' || p.getAttribute('data-categoria') === cat) ? "block" : "none";
     });
