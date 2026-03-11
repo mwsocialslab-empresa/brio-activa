@@ -94,22 +94,24 @@ function renderizarProductos(data) {
             data[cat].forEach(p => {
                 const precio = parseFloat(p.precio) || 0;
 
-                // --- 🔹 TRANSFORMADOR DE LINKS (CORREGIDO PARA CARRUSEL) ---
-                // 1. Tomamos el campo imagen y nos quedamos solo con lo que hay antes de la primera coma
+                // --- 🔹 TRANSFORMADOR DE LINKS (MANTIENE COMPATIBILIDAD CARRUSEL) ---
                 let listaImagenes = p.imagen || "";
                 let primeraImagen = listaImagenes.split(",")[0].trim(); 
-                
                 let imgURL = primeraImagen;
                 
                 if (imgURL.includes("drive.google.com")) {
                     const match = imgURL.match(/\/d\/([^/]+)/) || imgURL.match(/[?&]id=([^&]+)/);
                     if (match && match[1]) {
-                        imgURL = `https://lh3.googleusercontent.com/u/0/d/${match[1]}`;
+                        // Corrección de sintaxis de template string
+                        imgURL = `https://lh3.googleusercontent.com/u/0/d/$${match[1]}`;
                     }
                 }
+
+                // --- 🔹 LIMPIEZA DE DESCRIPCIÓN PARA EL INICIO ---
+                // Tomamos solo el primer bloque de texto antes del separador '|'
+                const detalleLimpio = p.detalle ? p.detalle.split("|")[0].trim() : 'Opción de Brío Activa.';
                 // ----------------------------------------------------------
 
-                // Guardamos el objeto con la lista completa de imágenes para que verDetalle() pueda usarlas
                 productosGlobal.push({ ...p, precio, imagen: listaImagenes, categoria: cat });
 
                 htmlFinal += `
@@ -117,7 +119,7 @@ function renderizarProductos(data) {
                         <div class="card producto-card shadow-sm mb-2" onclick="verDetalle(${globalIndex})">
                             <div class="info-container">
                                 <h6 class="fw-bold mb-1">${p.nombre.toUpperCase()}</h6>
-                                <p class="descripcion-corta mb-2 text-muted small">${p.detalle || 'Opción de Brío Activa.'}</p>
+                                <p class="descripcion-corta mb-2 text-muted small">${detalleLimpio}</p>
                                 <div class="precio text-success fw-bold">$${precio.toLocaleString('es-AR')}</div>
                             </div>
                             <div class="img-container">
@@ -132,25 +134,28 @@ function renderizarProductos(data) {
     contenedor.innerHTML = htmlFinal || "<p class='text-center'>No hay productos disponibles.</p>";
 }
 
-
 function verDetalle(index) {
     const p = productosGlobal[index];
     if (!p) return;
     productoSeleccionado = { ...p, indexGlobal: index };
 
-    // --- 🔹 LÓGICA DE MULTI-IMÁGENES (SABORES) ---
     const contenedorImg = document.querySelector(".contenedor-zoom");
-    const imagenes = p.imagen.split(","); // Separamos por coma
+    const imagenes = p.imagen.split(",").map(img => img.trim());
     
+    // --- 🔹 NUEVA LÓGICA DE DESCRIPCIONES SINCRONIZADAS ---
+    // Seteamos la descripción inicial (la primera parte antes del |)
+    const descripciones = (p.detalle || "").split("|").map(d => d.trim());
+    const descElement = document.getElementById("detalle-descripcion");
+    if (descElement) descElement.innerText = descripciones[0] || 'Opción de Brío Activa.';
+
     let htmlFotos = "";
     if (imagenes.length > 1) {
-        // Si hay más de una, creamos un carrusel simple de Bootstrap
         htmlFotos = `
             <div id="carouselDetalle" class="carousel slide" data-bs-ride="false">
                 <div class="carousel-inner">
                     ${imagenes.map((img, i) => `
                         <div class="carousel-item ${i === 0 ? 'active' : ''}">
-                            <img src="${img.trim()}" class="d-block w-100" style="object-fit: contain; height: 400px;">
+                            <img src="${img}" class="d-block w-100" style="object-fit: contain; height: 350px; background: #fff;">
                         </div>
                     `).join('')}
                 </div>
@@ -161,19 +166,27 @@ function verDetalle(index) {
                     <span class="carousel-control-next-icon bg-dark rounded-circle"></span>
                 </button>
             </div>`;
-    } else {
-        // Si hay una sola, queda como antes
-        htmlFotos = `<img id="detalle-img" src="${p.imagen}" alt="${p.nombre}" class="img-fluid" style="object-fit: contain;">`;
-    }
-    contenedorImg.innerHTML = htmlFotos;
-    // --------------------------------------------
+        
+        contenedorImg.innerHTML = htmlFotos;
 
+        // --- 🔹 EVENTO PARA DETECTAR EL CAMBIO DE FOTO ---
+        const myCarousel = document.getElementById('carouselDetalle');
+        myCarousel.addEventListener('slid.bs.carousel', function (event) {
+            const indexFoto = event.to; // Nos dice a qué foto cambió (0, 1, 2...)
+            // Si existe una descripción para esa foto, la ponemos. Si no, dejamos la primera.
+            if (descElement) {
+                descElement.innerText = descripciones[indexFoto] || descripciones[0];
+            }
+        });
+
+    } else {
+        contenedorImg.innerHTML = `<img id="detalle-img" src="${imagenes[0]}" class="img-fluid" style="object-fit: contain;">`;
+    }
+
+    // El resto de los datos
     document.getElementById("detalle-nombre").innerText = p.nombre.toUpperCase();
     document.getElementById("detalle-precio").innerText = `$${p.precio.toLocaleString('es-AR')}`;
     document.getElementById("cant-detalle").value = 1;
-    
-    const desc = document.getElementById("detalle-descripcion");
-    if (desc) desc.innerText = p.detalle || 'Opción de Brío Activa.';
 
     document.getElementById("hero").classList.add("d-none");
     document.getElementById("contenedor-catalogo").classList.add("d-none");
