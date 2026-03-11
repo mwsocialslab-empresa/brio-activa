@@ -6,7 +6,7 @@ const URL_SHEETS = "https://script.google.com/macros/s/AKfycby2CcS1l1igqqIBdmlkC
 const HORARIOS_ATENCION = {
     1: { inicio: "8:00", fin: "21:00" }, // Lun
     2: { inicio: "8:00", fin: "21:00" }, // Mar
-    3: { inicio: "8:00", fin: "21:00" }, // Mie
+    3: { inicio: "18:00", fin: "21:00" }, // Mie
     4: { inicio: "8:00", fin: "21:00" }, // Jue
     5: { inicio: "8:00", fin: "21:00" }, // Vie
     6: { inicio: "8:00", fin: "21:00" }, // Sab

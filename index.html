@@ -15,19 +15,19 @@
 <header class="main-header bg-dark overflow-hidden py-0">
     <div class="marquesina-wrapper">
         <div class="marquesina-content">
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
           
         </div>
         <div class="marquesina-content">
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
-            <span>¡ENVÍOS A DOMICILIO EN TODA LA CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
+            <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
            
         </div>
     </div>
@@ -202,7 +202,79 @@
                             <input type="text" id="nombreCliente" class="form-control" placeholder="Ej: Juan Pérez">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label small fw-bold">WhatsApp</label>
+                            <label class="form-
+
+async function enviarPedidoWhatsApp() {
+    const nom = document.getElementById('nombreCliente')?.value.trim().toUpperCase();
+    const dir = document.getElementById('direccionModal')?.value.trim().toUpperCase();
+    const tel = document.getElementById('telefonoCliente')?.value.trim() || "N/A";
+    if (!estaAbierto()) return mostrarAvisoCerrado();
+    if (!nom || !dir) {
+        document.getElementById('nombreCliente').classList.add("is-invalid");
+        document.getElementById('direccionModal').classList.add("is-invalid");
+        return mostrarToast("⚠️ Completa nombre y dirección");
+    }
+    let total = 0, itemsWS = "", itemsSheets = [];
+    carrito.forEach(p => {
+        total += (p.precio * p.cantidad);
+        itemsSheets.push(`${p.cantidad}x ${p.nombre.toUpperCase()}`);
+        itemsWS +=`✅ ${p.cantidad}x - ${p.nombre.toUpperCase()}\n`;
+    });
+    const pedidoNum = obtenerSiguientePedido();
+    const fecha = new Date().toLocaleString('es-AR');
+    enviarPedidoASheets({ pedido: pedidoNum, fecha, cliente: nom, telefono: tel, productos: itemsSheets.join(", "), total, direccion: dir });
+    
+    const linkApp = "link.mercadopago.com.ar/home"; 
+    
+    let msg =`🛒 *PEDIDO N° ${pedidoNum}*\n📅 ${fecha}\n👤 *CLIENTE:* ${nom}\n--------------------------\n${itemsWS}--------------------------\n📍 *Dirección:* ${dir}\n💰 *Total:* $${total.toLocaleString('es-AR')}\n\n`;
+    msg +=`🤝 *MERCADO PAGO:*\n`;
+    msg +=`📲 *TOCÁ EN "INICIAR SESIÓN"*\n`;
+    msg +=`👇 App: ${linkApp}\n`;
+    msg +=`👉 Alias: *Alias-Ejemplo*\n`;
+    msg +=`😎 *No olvides mandar el comprobante de pago*\n\n`;
+    msg +=`🙏 ¡Muchas gracias!`;
+
+    window.open(`https://wa.me/5491127461954?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+/* ==========================================
+   🔹 UTILIDADES
+   ========================================== */
+function buscarProducto() {
+    if (!document.getElementById("vista-detalle").classList.contains("d-none")) volverAlCatalogo();
+    const busqueda = document.getElementById('buscador').value.toLowerCase();
+    document.querySelectorAll('.producto').forEach(tarjeta => {
+        const nombre = tarjeta.querySelector('h6').innerText.toLowerCase();
+        tarjeta.style.display = nombre.includes(busqueda) ? "block" : "none";
+    });
+}
+
+function filtrar(cat) {
+    volverAlCatalogo();
+    
+    // --- 🔹 NUEVA LÓGICA PARA EL HERO EN MÓVILES ---
+    const hero = document.getElementById("hero");
+    if (hero) {
+        // Si el ancho es menor a 768px (móvil) y elegiste una categoría que no sea 'todos'
+        if (window.innerWidth < 768 && cat !== 'todos') {
+            hero.classList.add("d-none");
+        } else {
+            // Si es 'todos' o pantalla grande, aseguramos que se vea
+            hero.classList.remove("d-none");
+        }
+    }
+    // ----------------------------------------------
+
+    document.querySelectorAll('.producto').forEach(p => {
+        p.style.display = (cat === 'todos' || p.getAttribute('data-categoria') === cat) ? "block" : "none";
+    });
+}
+
+function volverAlCatalogo() {
+    document.getElementById("hero").classList.remove("d-none");
+    document.getElementById("contenedor-catalogo").classList.remove("d-none");
+    document.getElementById("vista-detalle").classList.add("d-none");
+ label small fw-bold">WhatsApp</label>
                            <input type="tel" 
                             id="telefonoCliente" 
                             class="form-control" 
@@ -250,9 +322,8 @@
         <p>En este momento BRÍO ACTIVA nutrición no está tomando pedidos.</p>
         <div class="bg-secondary bg-opacity-25 rounded p-3 mt-3">
             <h6 class="text-warning fw-bold mb-2">Nuestros horarios son:</h6>
-            <p class="mb-1">Lun a Jue: 19:00 a 00:00</p>
-            <p class="mb-1">Vie y Sáb: 19:00 a 01:00</p>
-            <p class="mb-0">Dom: 19:00 a 00:00</p>
+            <p class="mb-1">Lunes a Sábado: 8:00 a 21:00 hs</p>
+            <p class="mb-0">Domingo: 10:00 a 17:00 hs</p>
         </div>
       </div>
       <div class="modal-footer border-0 justify-content-center">
