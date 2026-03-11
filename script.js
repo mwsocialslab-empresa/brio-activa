@@ -87,20 +87,23 @@ function renderizarProductos(data) {
     let htmlFinal = "";
     let globalIndex = 0;
     productosGlobal = [];
-    const categorias = ["strat nutrition", "granger nutrition", "gold nutrition","gentech","ena","body advance", "promos"];
+    
+    // CORRECCIÓN: "start nutrition" (antes decía "strat")
+    const categorias = ["start nutrition", "granger nutrition", "gold nutrition", "gentech", "ena", "body advance", "promos"];
     
     categorias.forEach(cat => {
-        if (data[cat]?.length > 0) {
+        // Verificamos que la categoría exista en los datos que vienen del Sheets
+        if (data[cat] && data[cat].length > 0) {
             data[cat].forEach(p => {
                 const precio = parseFloat(p.precio) || 0;
 
-                // --- 🔹 TRANSFORMADOR DE LINKS DE DRIVE ---
+                // --- 🔹 TRANSFORMADOR DE LINKS DE DRIVE (CORREGIDO) ---
                 let imgURL = p.imagen || "";
                 if (imgURL.includes("drive.google.com")) {
-                    // Extrae el ID del archivo (funciona con links /file/d/... o ?id=...)
                     const match = imgURL.match(/\/d\/([^/]+)/) || imgURL.match(/[?&]id=([^&]+)/);
-                    if (match && match[1]) {
-                        imgURL = `https://lh3.googleusercontent.com/u/0/d/${match[1]}`;
+                    if (match && match) {
+                        // Se agregaron las comillas invertidas (backticks) y el $ correcto
+                        imgURL = `https://lh3.googleusercontent.com/u/0/d/${match}`;
                     }
                 }
                 // ------------------------------------------
