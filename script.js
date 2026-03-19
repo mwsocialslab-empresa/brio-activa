@@ -1,7 +1,7 @@
 /* ==========================================
    🔹 CONFIGURACIÓN GLOBAL Y ESTADO
    ========================================== */
-const URL_SHEETS = "https://script.google.com/macros/s/AKfycby2CcS1l1igqqIBdmlkCM3kHheHtZ4K4FpsSL70eqdQVt0xByLY6lVhYZpgTOqORA--zg/exec";
+const URL_SHEETS = "https://script.google.com/macros/s/AKfycbxUjknVxI88EqWUtwuIQxiBJM8COxnponqjgd6pEZ-qEBbfb3D88e9fgFVthR6N_t0VPQ/exec";
 
 const HORARIOS_ATENCION = {
     1: { inicio: "8:00", fin: "21:00" }, // Lun
@@ -72,14 +72,22 @@ function mostrarAvisoCerrado() {
    ========================================== */
 function cargarDesdeSheets() {
     const url = `${URL_SHEETS}?v=${new Date().getTime()}`;
-    fetch(url, { method: 'GET', redirect: 'follow' })
-        .then(r => r.json())
-        .then(data => renderizarProductos(data))
-        .catch(err => {
-            console.error("Error:", err);
-            const cont = document.getElementById("productos");
-            if (cont) cont.innerHTML = "<p class='text-center text-danger'>Error al conectar con el menú.</p>";
-        });
+    
+    fetch(url, { 
+        method: 'GET',
+        // No agregues headers manuales como 'Content-Type' en el GET, 
+        // a veces eso dispara el preflight de CORS y falla.
+    })
+    .then(r => {
+        if (!r.ok) throw new Error('Error en la respuesta de red');
+        return r.json();
+    })
+    .then(data => renderizarProductos(data))
+    .catch(err => {
+        console.error("Error detallado:", err);
+        const cont = document.getElementById("productos");
+        if (cont) cont.innerHTML = "<p class='text-center text-danger'>Error al conectar con el menú.</p>";
+    });
 }
 function renderizarProductos(data) {
     const contenedor = document.getElementById("productos");
@@ -93,32 +101,33 @@ function renderizarProductos(data) {
         if (data[cat]?.length > 0) {
             data[cat].forEach(p => {
                 const precio = parseFloat(p.precio) || 0;
+                
+                // 📌 Comparamos exactamente con lo que pusiste en el Sheets
+                const tieneStock = p.stock && p.stock.toLowerCase() === "en stock";
 
-                // --- 🔹 TRANSFORMADOR DE LINKS (MANTIENE COMPATIBILIDAD CARRUSEL) ---
                 let listaImagenes = p.imagen || "";
                 let primeraImagen = listaImagenes.split(",")[0].trim(); 
                 let imgURL = primeraImagen;
                 
+                // (Mantenemos tu lógica de Google Drive)
                 if (imgURL.includes("drive.google.com")) {
                     const match = imgURL.match(/\/d\/([^/]+)/) || imgURL.match(/[?&]id=([^&]+)/);
                     if (match && match[1]) {
-                        // Corrección: Usamos backticks y el signo $ para que el ID se inserte bien
-                        imgURL = `https://lh3.googleusercontent.com/d/${match[1]}`;
+                        imgURL = `http://googleusercontent.com/profile/picture/4{match[1]}`;
                     }
                 }
 
-                // --- 🔹 LIMPIEZA DE NOMBRE Y DESCRIPCIÓN PARA EL INICIO ---
-                // Tomamos solo el primer bloque antes del separador '|' para que no se vea feo en la lista
                 const nombreLimpio = p.nombre ? p.nombre.split("|")[0].trim() : "Sin nombre";
                 const detalleLimpio = p.detalle ? p.detalle.split("|")[0].trim() : 'Opción de Brío Activa.';
-                // ----------------------------------------------------------
 
-                // Guardamos los datos completos para que la vista de detalle pueda usarlos
-                productosGlobal.push({ ...p, precio, imagen: listaImagenes, categoria: cat });
+                productosGlobal.push({ ...p, precio, imagen: listaImagenes, categoria: cat, tieneStock });
 
                 htmlFinal += `
                     <div class="col-12 col-md-6 producto" data-categoria="${cat}">
-                        <div class="card producto-card shadow-sm mb-2" onclick="verDetalle(${globalIndex})">
+                        <div class="card producto-card shadow-sm mb-2" onclick="verDetalle(${globalIndex})" style="opacity:1 !important; filter:none !important;">
+                            
+                            ${!tieneStock ? '<div class="badge-sin-stock">SIN STOCK</div>' : ''}
+                            
                             <div class="info-container">
                                 <h6 class="fw-bold mb-1">${nombreLimpio.toUpperCase()}</h6>
                                 <p class="descripcion-corta mb-2 text-muted small">${detalleLimpio}</p>
@@ -135,7 +144,6 @@ function renderizarProductos(data) {
     });
     contenedor.innerHTML = htmlFinal || "<p class='text-center'>No hay productos disponibles.</p>";
 }
-
 function verDetalle(index) {
     const p = productosGlobal[index];
     if (!p) return;
@@ -144,17 +152,17 @@ function verDetalle(index) {
     const contenedorImg = document.querySelector(".contenedor-zoom");
     const imagenes = p.imagen.split(",").map(img => img.trim());
     
-    // --- 🔹 LÓGICA DE DATOS DINÁMICOS (NOMBRE Y DESCRIPCIÓN) ---
+    // --- 🔹 LÓGICA DE TEXTOS DINÁMICOS ---
     const nombres = (p.nombre || "").split("|").map(n => n.trim());
     const descripciones = (p.detalle || "").split("|").map(d => d.trim());
     
     const nombreElement = document.getElementById("detalle-nombre");
     const descElement = document.getElementById("detalle-descripcion");
 
-    // Seteamos los valores iniciales (posición 0)
     if (nombreElement) nombreElement.innerText = nombres[0].toUpperCase();
     if (descElement) descElement.innerText = descripciones[0] || 'Opción de Brío Activa.';
 
+    // --- 🔹 LÓGICA DE IMAGEN / CARRUSEL ---
     let htmlFotos = "";
     if (imagenes.length > 1) {
         htmlFotos = `
@@ -176,28 +184,37 @@ function verDetalle(index) {
         
         contenedorImg.innerHTML = htmlFotos;
 
-        // --- 🔹 EVENTO DE CAMBIO SINCRONIZADO ---
+        // Sincronizar cambio de nombre/descripción con el carrusel
         const myCarousel = document.getElementById('carouselDetalle');
         myCarousel.addEventListener('slid.bs.carousel', function (event) {
             const indexFoto = event.to; 
-            
-            // Cambia Nombre
-            if (nombreElement) {
-                nombreElement.innerText = (nombres[indexFoto] || nombres[0]).toUpperCase();
-            }
-            // Cambia Descripción
-            if (descElement) {
-                descElement.innerText = descripciones[indexFoto] || descripciones[0];
-            }
+            if (nombreElement) nombreElement.innerText = (nombres[indexFoto] || nombres[0]).toUpperCase();
+            if (descElement) descElement.innerText = descripciones[indexFoto] || descripciones[0];
         });
 
     } else {
-        contenedorImg.innerHTML = `<img id="detalle-img" src="${imagenes[0]}" class="img-fluid" style="object-fit: contain;">`;
+        contenedorImg.innerHTML = `<img id="detalle-img" src="${imagenes[0]}" class="img-fluid" style="object-fit: contain; width: 100%; height: 350px;">`;
     }
 
+    // --- 🔹 PRECIO Y CANTIDAD ---
     document.getElementById("detalle-precio").innerText = `$${p.precio.toLocaleString('es-AR')}`;
     document.getElementById("cant-detalle").value = 1;
 
+    // --- 📌 BLOQUEO DE BOTÓN SEGÚN STOCK ---
+    const btnAgregar = document.getElementById("btn-agregar-detalle");
+    if (btnAgregar) {
+        if (p.tieneStock) {
+            btnAgregar.disabled = false;
+            btnAgregar.innerHTML = 'AÑADIR AL PEDIDO <i class="bi bi-cart4"></i>';
+            btnAgregar.className = "btn btn-dark w-100 py-3 fw-bold rounded-pill shadow d-flex align-items-center justify-content-center gap-2";
+        } else {
+            btnAgregar.disabled = true;
+            btnAgregar.innerHTML = 'SIN STOCK DISPONIBLE <i class="bi bi-x-circle"></i>';
+            btnAgregar.className = "btn btn-secondary w-100 py-3 fw-bold rounded-pill shadow d-flex align-items-center justify-content-center gap-2";
+        }
+    }
+
+    // --- 🔹 CAMBIO DE VISTA ---
     document.getElementById("hero").classList.add("d-none");
     document.getElementById("contenedor-catalogo").classList.add("d-none");
     document.getElementById("vista-detalle").classList.remove("d-none");

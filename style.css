@@ -381,3 +381,24 @@ button {
 #accordionHorarios .accordion-button::after {
     filter: invert(78%) sepia(64%) saturate(541%) hue-rotate(354deg) brightness(101%) contrast(101%);
 }
+/* Estilo para el cartel de Sin Stock */
+.producto-card { position: relative; overflow: hidden; }
+
+.badge-sin-stock {
+    position: absolute;
+    top: 15px;
+    right: -35px;
+    background-color: #ff0000;
+    color: white;
+    padding: 5px 40px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    transform: rotate(45deg);
+    z-index: 10;
+    pointer-events: none; /* Para que no interfiera con el clic de la tarjeta */
+}
+
+.producto-card {
+    opacity: 1 !important;
+    filter: none !important;
+}
