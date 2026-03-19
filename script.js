@@ -103,7 +103,8 @@ function renderizarProductos(data) {
                 const precio = parseFloat(p.precio) || 0;
                 
                 // 📌 Comparamos exactamente con lo que pusiste en el Sheets
-                const tieneStock = p.stock && p.stock.toLowerCase() === "en stock";
+                // Dentro de renderizarProductos
+                const tieneStock = p.stock && p.stock.toString().toLowerCase().trim() === "en stock";
 
                 let listaImagenes = p.imagen || "";
                 let primeraImagen = listaImagenes.split(",")[0].trim(); 

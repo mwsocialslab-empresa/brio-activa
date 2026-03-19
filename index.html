@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Brío Activa </title>
+    <title>Brío Activa</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,7 +19,6 @@
             <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
             <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
             <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
-          
         </div>
         <div class="marquesina-content">
             <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
@@ -28,7 +26,6 @@
             <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
             <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
             <span>¡ENVÍOS A DOMICILIO EN CABA! &nbsp;&nbsp;</span>
-           
         </div>
     </div>
 </header>
@@ -36,10 +33,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-2">
     <div class="container">
        <a class="navbar-brand d-flex align-items-center" href="#" onclick="volverAlCatalogo(); return false;">
-            <img src="img/logo.png" alt="La Reco Logo" class="me-2" style="width: 180px;">
-            
+            <img src="img/logo.png" alt="Logo" class="me-2" style="width: 180px;">
         </a>
-
         <div class="d-flex order-lg-last ms-2">
             <button class="btn btn-cart-nav position-relative" onclick="intentarAbrirCarrito()">
                 <span class="fs-4"><i class="bi bi-truck"></i></span>
@@ -49,7 +44,6 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
-
         <div class="collapse navbar-collapse" id="menuNav">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a href="javascript:void(0)" class="nav-link px-3" onclick="filtrar('todos')">INICIO</a></li>
@@ -85,13 +79,13 @@
         </div>
     </div>
 </section>
+
 <div class="accordion accordion-flush" id="accordionHorarios">
   <div class="accordion-item bg-dark border-secondary">
     <h2 class="accordion-header">
-      <button class="accordion-button collapsed bg-dark text-warning fw-bold justify-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#flush-horarios" aria-expanded="false" aria-controls="flush-horarios">
+      <button class="accordion-button collapsed bg-dark text-warning fw-bold justify-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#flush-horarios">
         <div class="text-center">
-             <i class="bi bi-clock-history me-2"></i> 
-             NUESTROS DÍAS Y HORARIOS DE ATENCIÓN
+             <i class="bi bi-clock-history me-2"></i> NUESTROS DÍAS Y HORARIOS DE ATENCIÓN
         </div>
       </button>
     </h2>
@@ -99,79 +93,59 @@
       <div class="accordion-body text-white">
         <table class="table table-sm table-dark table-borderless mb-0">
           <tbody>
-            <tr>
-              <td>Lunes a Sábado</td>
-              <td class="text-end text-warning">8:00 a 21:00</td>
-            </tr>
-            <tr>
-              <td>Domingos</td>
-              <td class="text-end text-warning">10:00 a 17:00</td>
-            </tr>
+            <tr><td>Lunes a Sábado</td><td class="text-end text-warning">8:00 a 21:00</td></tr>
+            <tr><td>Domingos</td><td class="text-end text-warning">10:00 a 17:00</td></tr>
           </tbody>
         </table>
-        <hr class="my-2 border-secondary">
-        <p class="small mb-0 text-center text-muted">
-            * Sujeto a cambios en días feriados.
-        </p>
       </div>
     </div>
   </div>
 </div>
 
-<main class="container my-4" id="productos-section" style="scroll-margin-top: 100px;">
+<main class="container my-4" id="productos-section">
     <div class="mb-4">
         <div class="input-group shadow-sm rounded-3 overflow-hidden">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
             <input type="text" id="buscador" class="form-control border-start-0 py-3" placeholder="Buscar productos..." onkeyup="buscarProducto()">
         </div>
     </div>
-    
     <div id="contenedor-catalogo">
         <div id="productos" class="row g-3">
-            <div class="text-center py-5">
-                <div class="spinner-border text-warning" role="status"></div>
-                <p class="mt-2 text-muted">Preparando la tu pedido...</p>
             </div>
-        </div>
     </div>
 </main>
 
 <section id="vista-detalle" class="container my-4 d-none">
-    <nav aria-label="breadcrumb" class="mb-4">
+    <nav class="mb-4">
         <button class="btn btn-link text-dark p-0 text-decoration-none fw-bold" onclick="volverAlCatalogo()">
             <i class="bi bi-arrow-left"></i> VOLVER AL INICIO
         </button>
     </nav>
-
     <div class="row gx-lg-5">
         <div class="col-12 col-md-6 mb-4">
-            <div class="contenedor-zoom shadow-sm rounded-4 overflow-hidden">
-                <img id="detalle-img" src="" alt="Producto" class="img-fluid">
+            <div class="contenedor-zoom shadow-sm rounded-4 overflow-hidden bg-white">
+                <img id="detalle-img" src="" alt="Producto" class="img-fluid w-100">
             </div>
         </div>
         <div class="col-12 col-md-6 mb-4">
             <div class="p-4 bg-white rounded-4 shadow-sm border">
                 <h2 id="detalle-nombre" class="fw-bold mb-2"></h2>
                 <div id="detalle-precio" class="display-6 fw-bold text-success mb-4"></div>
-                
-                
-                 <div class="pt-4 mt-4 border-top mb-4"> <h5 class="fw-bold text-uppercase small mb-3">Descripción</h5>
+                <div class="pt-4 mt-4 border-top mb-4">
+                    <h5 class="fw-bold text-uppercase small mb-3">Descripción</h5>
                     <p id="detalle-descripcion" class="text-muted"></p>
                 </div>
                 <div class="mb-4">
                     <label class="d-block fw-bold text-uppercase small mb-2 text-muted">Cantidad</label>
                     <div class="input-group input-group-lg w-50 shadow-sm rounded"> 
                         <button class="btn btn-outline-dark" onclick="cambiarCantidadDetalle(-1)">-</button>
-                        <input id="cant-detalle" type="text" class="form-control text-center bg-white border-dark" value="1" readonly>
+                        <input id="cant-detalle" type="text" class="form-control text-center bg-white" value="1" readonly>
                         <button class="btn btn-outline-dark" onclick="cambiarCantidadDetalle(1)">+</button>
                     </div>
                 </div>
-
                 <button id="btn-agregar-detalle" class="btn btn-dark w-100 py-3 fw-bold rounded-pill shadow d-flex align-items-center justify-content-center gap-2">
                     AÑADIR AL PEDIDO <i class="bi bi-cart4"></i>
                 </button>
-
-               
             </div>
         </div>
     </div>
@@ -186,14 +160,12 @@
             </div>
             <div class="modal-body">
                 <div id="listaModal" class="mb-4 scroll-carrito"></div>
-
                 <div class="p-3 bg-light rounded-3 mb-4 border">
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-muted fw-bold">TOTAL:</span>
                         <h4 class="mb-0 text-success fw-bold">$<span id="totalModal">0</span></h4>
                     </div>
                 </div>
-
                 <div class="form-envio">
                     <h6 class="fw-bold mb-3 text-uppercase small border-bottom pb-2">Datos de Entrega</h6>
                     <div class="row">
@@ -202,84 +174,8 @@
                             <input type="text" id="nombreCliente" class="form-control" placeholder="Ej: Juan Pérez">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-
-
-async function enviarPedidoWhatsApp() {
-    const nom = document.getElementById('nombreCliente')?.value.trim().toUpperCase();
-    const dir = document.getElementById('direccionModal')?.value.trim().toUpperCase();
-    const tel = document.getElementById('telefonoCliente')?.value.trim() || "N/A";
-    if (!estaAbierto()) return mostrarAvisoCerrado();
-    if (!nom || !dir) {
-        document.getElementById('nombreCliente').classList.add("is-invalid");
-        document.getElementById('direccionModal').classList.add("is-invalid");
-        return mostrarToast("⚠️ Completa nombre y dirección");
-    }
-    let total = 0, itemsWS = "", itemsSheets = [];
-    carrito.forEach(p => {
-        total += (p.precio * p.cantidad);
-        itemsSheets.push(`${p.cantidad}x ${p.nombre.toUpperCase()}`);
-        itemsWS +=`✅ ${p.cantidad}x - ${p.nombre.toUpperCase()}\n`;
-    });
-    const pedidoNum = obtenerSiguientePedido();
-    const fecha = new Date().toLocaleString('es-AR');
-    enviarPedidoASheets({ pedido: pedidoNum, fecha, cliente: nom, telefono: tel, productos: itemsSheets.join(", "), total, direccion: dir });
-    
-    const linkApp = "link.mercadopago.com.ar/home"; 
-    
-    let msg =`🛒 *PEDIDO N° ${pedidoNum}*\n📅 ${fecha}\n👤 *CLIENTE:* ${nom}\n--------------------------\n${itemsWS}--------------------------\n📍 *Dirección:* ${dir}\n💰 *Total:* $${total.toLocaleString('es-AR')}\n\n`;
-    msg +=`🤝 *MERCADO PAGO:*\n`;
-    msg +=`📲 *TOCÁ EN "INICIAR SESIÓN"*\n`;
-    msg +=`👇 App: ${linkApp}\n`;
-    msg +=`👉 Alias: *Alias-Ejemplo*\n`;
-    msg +=`😎 *No olvides mandar el comprobante de pago*\n\n`;
-    msg +=`🙏 ¡Muchas gracias!`;
-
-    window.open(`https://wa.me/5491127461954?text=${encodeURIComponent(msg)}`, '_blank');
-}
-
-/* ==========================================
-   🔹 UTILIDADES
-   ========================================== */
-function buscarProducto() {
-    if (!document.getElementById("vista-detalle").classList.contains("d-none")) volverAlCatalogo();
-    const busqueda = document.getElementById('buscador').value.toLowerCase();
-    document.querySelectorAll('.producto').forEach(tarjeta => {
-        const nombre = tarjeta.querySelector('h6').innerText.toLowerCase();
-        tarjeta.style.display = nombre.includes(busqueda) ? "block" : "none";
-    });
-}
-
-function filtrar(cat) {
-    volverAlCatalogo();
-    
-    // --- 🔹 NUEVA LÓGICA PARA EL HERO EN MÓVILES ---
-    const hero = document.getElementById("hero");
-    if (hero) {
-        // Si el ancho es menor a 768px (móvil) y elegiste una categoría que no sea 'todos'
-        if (window.innerWidth < 768 && cat !== 'todos') {
-            hero.classList.add("d-none");
-        } else {
-            // Si es 'todos' o pantalla grande, aseguramos que se vea
-            hero.classList.remove("d-none");
-        }
-    }
-    // ----------------------------------------------
-
-    document.querySelectorAll('.producto').forEach(p => {
-        p.style.display = (cat === 'todos' || p.getAttribute('data-categoria') === cat) ? "block" : "none";
-    });
-}
-
-function volverAlCatalogo() {
-    document.getElementById("hero").classList.remove("d-none");
-    document.getElementById("contenedor-catalogo").classList.remove("d-none");
-    document.getElementById("vista-detalle").classList.add("d-none");
- label small fw-bold">WhatsApp</label>
-                           <input type="tel" 
-                            id="telefonoCliente" 
-                            class="form-control" 
-                            placeholder="Ej: 1122334455"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <label class="form-label small fw-bold">WhatsApp</label>
+                            <input type="tel" id="telefonoCliente" class="form-control" placeholder="Ej: 1122334455" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
                     </div>
                     <div class="mb-4">
@@ -287,7 +183,6 @@ function volverAlCatalogo() {
                         <input type="text" id="direccionModal" class="form-control" placeholder="Calle 123, Depto 4B">
                     </div>
                 </div>
-
                 <button class="btn btn-success w-100 py-3 fw-bold rounded-pill d-flex align-items-center justify-content-center gap-2 shadow" onclick="enviarPedidoWhatsApp()">
                     PEDIR POR WHATSAPP <i class="bi bi-whatsapp"></i>
                 </button>
@@ -298,40 +193,11 @@ function volverAlCatalogo() {
 
 <footer class="bg-dark text-white py-5 mt-5">
     <div class="container text-center">
-        <img src="img/logo.png" alt="Logo" width="200" height=200" class=" ">
+        <img src="img/logo.png" alt="Logo" width="200" class="mb-3">
         <p class="text-warning small mb-4">LOS MEJORES SUPLEMENTOS EN UN SOLO LUGAR.</p>
-        <div class="mb-4">
-            <a href="#" class="text-white mx-3 fs-5"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="text-white mx-3 fs-5"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="text-white mx-3 fs-5"><i class="bi bi-whatsapp"></i></a>
-        </div>
-        <hr class="opacity-25">
-        <p class="small opacity-50 mb-0">&copy; 2026 BRÍO ACTIVA nutrición. Todos los derechos reservados.</p>
-        <a href="https://cele403938484.my.canva.site/nuestra-estrategia-tus-ideas-convertidos-en-marca?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn5imOVgBf7HVqw-vAg8FeHs18j7umEObpKpHPG-ZdBtcZbU6vCUl9S0mR_bU_aem_P1QEbSXUolE0eaY6iZrPyA" class="text-white mx-3 fs-5">Craedo por: MWsacials</a>
+        <p class="small opacity-50 mb-0">&copy; 2026 BRÍO ACTIVA nutrición. Creado por: MWsocials</p>
     </div>
 </footer>
-<div class="modal fade" id="modalCerrado" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-white border-warning">
-      <div class="modal-header border-secondary">
-        <h5 class="modal-title text-warning">BRÍO ACTIVA nutrición</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body text-center py-4">
-        <h4 class="mb-3">¡Estamos descansando!</h4>
-        <p>En este momento BRÍO ACTIVA nutrición no está tomando pedidos.</p>
-        <div class="bg-secondary bg-opacity-25 rounded p-3 mt-3">
-            <h6 class="text-warning fw-bold mb-2">Nuestros horarios son:</h6>
-            <p class="mb-1">Lunes a Sábado: 8:00 a 21:00 hs</p>
-            <p class="mb-0">Domingo: 10:00 a 17:00 hs</p>
-        </div>
-      </div>
-      <div class="modal-footer border-0 justify-content-center">
-        <button type="button" class="btn btn-warning fw-bold px-4" data-bs-dismiss="modal">ENTENDIDO</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script.js"></script>
